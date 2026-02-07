@@ -9,8 +9,11 @@ export async function GET() {
   }
 
   const data = await res.json();
-  // Return only currencies relevant to our life paths
-  const relevant = ['EUR', 'GBP', 'JPY', 'MXN', 'INR', 'BRL', 'CAD', 'AUD', 'KRW', 'PHP'];
+  // Hispanic countries, popular tourist destinations, and key economies
+  const relevant = [
+    'MXN', 'COP', 'DOP', 'CRC', 'GTQ', 'PEN', 'ARS',
+    'EUR', 'GBP', 'JPY', 'THB', 'PHP', 'BRL', 'CAD', 'INR',
+  ];
   const rates: Record<string, number> = {};
   for (const code of relevant) {
     if (data.conversion_rates[code]) {

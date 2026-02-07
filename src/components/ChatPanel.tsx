@@ -1,11 +1,20 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import type { OnboardingResult } from './OnboardingFlow';
+import type { LifePath } from '@/types';
+
+interface ChatProfile {
+  age: number;
+  hasCareer: boolean;
+  careerPath: string | null;
+  income: number;
+  expenses: number;
+  lifePath: LifePath;
+}
 
 type Msg = { from: 'user' | 'fin'; text: string };
 
-export default function ChatPanel({ profile }: { profile: OnboardingResult }) {
+export default function ChatPanel({ profile }: { profile: ChatProfile }) {
   const [messages, setMessages] = useState<Msg[]>([
     { from: 'fin', text: `Based on your ${profile.lifePath.replace(/-/g, ' ')} path with $${profile.income.toLocaleString()}/mo income — ask me anything about your finances.` },
   ]);

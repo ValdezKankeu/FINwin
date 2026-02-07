@@ -109,26 +109,18 @@ const COLLEGE: Career[] = [
     ],
   },
   {
-  title: 'Civil Engineer',
-  salary: '~$95,000',
-  time: '4 years',
-  education: 'BS Civil Engineering',
-  overview: 'Design and analyze infrastructure systems such as roads, bridges, and buildings. Versatile degree applicable across construction, transportation, and public works.',
-  steps: [
-    'Earn BS in Civil Engineering (ABET accredited)',
-    'Complete co-ops or internships',
-    'Pass FE exam to become Engineer in Training',
-    'Gain 4 years experience',
-    'Optional: pass PE exam for professional license'
-  ],
-  skills: [
-    'Structural analysis','AutoCAD / Civil 3D', 'Materials science','Project management'],
-  resources: [
-    { label: 'ASCE Career Resources', url: 'https://www.asce.org/career-growth' },
-    { label: 'ABET Accredited Programs', url: 'https://www.abet.org' }
-  ],
-},
-
+    title: 'Civil Engineer',
+    salary: '~$95,000',
+    time: '4 years',
+    education: 'BS Civil Engineering',
+    overview: 'Design and analyze infrastructure systems such as roads, bridges, and buildings. Versatile degree applicable across construction, transportation, and public works.',
+    steps: ['Earn BS in Civil Engineering (ABET accredited)', 'Complete co-ops or internships', 'Pass FE exam to become Engineer in Training', 'Gain 4 years experience', 'Optional: pass PE exam for professional license'],
+    skills: ['Structural analysis', 'AutoCAD / Civil 3D', 'Materials science', 'Project management'],
+    resources: [
+      { label: 'ASCE Career Resources', url: 'https://www.asce.org/career-growth' },
+      { label: 'ABET Accredited Programs', url: 'https://www.abet.org' },
+    ],
+  },
   {
     title: 'Industrial Engineer',
     salary: '~$95,000',
@@ -148,16 +140,12 @@ const COLLEGE: Career[] = [
     time: '2–4 years',
     education: 'BSN or ADN + NCLEX',
     overview: 'Provide patient care with high job security and nationwide demand.',
-    steps: [
-      'Earn BSN or ADN',
-      'Pass NCLEX-RN exam',
-      'Gain hospital experience',
-      'Optional: specialize or pursue NP'
-    ],
+    steps: ['Earn BSN or ADN', 'Pass NCLEX-RN exam', 'Gain hospital experience', 'Optional: specialize or pursue NP'],
     skills: ['Patient care', 'Clinical judgment', 'Communication'],
-    resources: [{ label: 'American Nurses Association', url: 'https://www.nursingworld.org' }]
+    resources: [
+      { label: 'American Nurses Association', url: 'https://www.nursingworld.org' },
+    ],
   },
-
   {
     title: 'Accountant',
     salary: '~$77,000',
@@ -187,55 +175,32 @@ const COLLEGE: Career[] = [
 ];
 
 const MILITARY: Career[] = [
-{
-  title: 'Military → Engineering Pipeline (Security Clearance)',
-  salary: '~$100,000–$160,000+',
-  time: '4–6 years',
-  education: 'Military technical training + clearance',
-  overview: 'Serve in a technical military role and earn a Secret or Top Secret clearance. This clearance directly qualifies you for federal engineering jobs and defense contractor roles after service.',
-  steps: [
-    'Enlist or commission into a technical or engineering MOS',
-    'Earn Secret or Top Secret security clearance',
-    'Gain hands-on engineering or systems experience',
-    'Use Tuition Assistance or GI Bill for engineering degree',
-    'Exit into guaranteed government or contractor engineering roles'
-  ],
-  skills: [
-    'Systems engineering',
-    'Security clearance',
-    'Technical documentation',
-    'Project execution'
-  ],
-  resources: [
-    { label: 'ClearanceJobs', url: 'https://www.clearancejobs.com' },
-    { label: 'Defense Contractor Careers', url: 'https://www.lockheedmartinjobs.com' }
-  ],
-},
-{
-  title: 'Military Pilot Pipeline',
-  salary: '~$90,000–$150,000+',
-  time: '6–10 years',
-  education: 'Officer commissioning + flight training',
-  overview: 'Become a military pilot through ROTC, OCS, or a service academy. Military pilots transition directly into commercial airlines and high-paying aviation roles.',
-  steps: [
-    'Earn a bachelor’s degree and commission as an officer',
-    'Pass flight physical and aviation aptitude tests',
-    'Complete military flight school (1–2 years)',
-    'Serve as operational pilot (jets, cargo, helicopters)',
-    'Transition to airlines or government aviation roles'
-  ],
-  skills: [
-    'Aviation systems',
-    'Decision making under pressure',
-    'Navigation & situational awareness',
-    'Leadership'
-  ],
-  resources: [
-    { label: 'Air Force Pilot Careers', url: 'https://www.airforce.com/careers/aviation-and-flight' },
-    { label: 'Navy Pilot Program', url: 'https://www.navy.com/careers/aviation' }
-  ],
-},
-
+  {
+    title: 'Military → Engineering Pipeline (Security Clearance)',
+    salary: '~$100,000–$160,000+',
+    time: '4–6 years',
+    education: 'Military technical training + clearance',
+    overview: 'Serve in a technical military role and earn a Secret or Top Secret clearance. This clearance directly qualifies you for federal engineering jobs and defense contractor roles after service.',
+    steps: ['Enlist or commission into a technical or engineering MOS', 'Earn Secret or Top Secret security clearance', 'Gain hands-on engineering or systems experience', 'Use Tuition Assistance or GI Bill for engineering degree', 'Exit into guaranteed government or contractor engineering roles'],
+    skills: ['Systems engineering', 'Security clearance', 'Technical documentation', 'Project execution'],
+    resources: [
+      { label: 'ClearanceJobs', url: 'https://www.clearancejobs.com' },
+      { label: 'Defense Contractor Careers', url: 'https://www.lockheedmartinjobs.com' },
+    ],
+  },
+  {
+    title: 'Military Pilot Pipeline',
+    salary: '~$90,000–$150,000+',
+    time: '6–10 years',
+    education: 'Officer commissioning + flight training',
+    overview: 'Become a military pilot through ROTC, OCS, or a service academy. Military pilots transition directly into commercial airlines and high-paying aviation roles.',
+    steps: ['Earn a bachelor\'s degree and commission as an officer', 'Pass flight physical and aviation aptitude tests', 'Complete military flight school (1–2 years)', 'Serve as operational pilot (jets, cargo, helicopters)', 'Transition to airlines or government aviation roles'],
+    skills: ['Aviation systems', 'Decision making under pressure', 'Navigation & situational awareness', 'Leadership'],
+    resources: [
+      { label: 'Air Force Pilot Careers', url: 'https://www.airforce.com/careers/aviation-and-flight' },
+      { label: 'Navy Pilot Program', url: 'https://www.navy.com/careers/aviation' },
+    ],
+  },
   {
     title: 'Military (Enlisted)',
     salary: '~$40,000–$70,000+',
@@ -268,12 +233,12 @@ const MILITARY: Career[] = [
     time: '4–6 years',
     education: 'Military cyber training',
     overview: 'Defend government networks with clearance-backed experience.',
-    steps: ['Cyber MOS', 'Certifications'],
-    skills: ['Cybersecurity'],
-    resources: [{ label: 'Military Cyber Careers', url: 'https://www.todaysmilitary.com' }]
+    steps: ['Enlist in a Cyber MOS (17C, 25B, or equivalent)', 'Earn CompTIA Security+, CEH, or CISSP certifications'],
+    skills: ['Cybersecurity', 'Network defense', 'Threat analysis'],
+    resources: [
+      { label: 'Military Cyber Careers', url: 'https://www.todaysmilitary.com' },
+    ],
   },
-  
-
   {
     title: 'Military → Civilian Tech',
     salary: '~$80,000–$130,000',
@@ -292,31 +257,13 @@ const MILITARY: Career[] = [
     salary: '~$90,000+',
     time: '4–6 years',
     education: 'Military intel school',
-    overview: 'Analyze classified intelligence for national security.',
-    steps: ['Intel MOS', 'Clearance'],
-    skills: ['Analysis'],
-    resources: [{ label: 'Military.com', url: 'https://www.military.com' }]
-  }
-  
-  
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
+    overview: 'Analyze classified intelligence for national security. Transitions to CIA, NSA, DIA, or defense contractor roles.',
+    steps: ['Enlist in an Intelligence MOS (35F, 35M, or equivalent)', 'Obtain TS/SCI security clearance', 'Gain operational intelligence experience', 'Transition to federal agency or contractor'],
+    skills: ['Intelligence analysis', 'Critical thinking', 'Security clearance', 'Report writing'],
+    resources: [
+      { label: 'Military.com', url: 'https://www.military.com' },
+    ],
+  },
 ];
 
 interface Props {
@@ -400,12 +347,9 @@ export default function CareerRecommendation({ income, onContinue }: Props) {
                 {/* Expanded details */}
                 {isExpanded && (
                   <div className="border-t border-gray-100 px-5 pb-5 space-y-4">
-                    {/* Overview */}
                     <div className="pt-4">
                       <p className="text-sm text-gray-600 leading-relaxed">{career.overview}</p>
                     </div>
-
-                    {/* Steps */}
                     <div>
                       <h4 className="text-sm font-semibold text-gray-900 mb-2">How to get started:</h4>
                       <ol className="space-y-1.5">
@@ -419,8 +363,6 @@ export default function CareerRecommendation({ income, onContinue }: Props) {
                         ))}
                       </ol>
                     </div>
-
-                    {/* Skills */}
                     <div>
                       <h4 className="text-sm font-semibold text-gray-900 mb-2">Key skills:</h4>
                       <div className="flex flex-wrap gap-2">
@@ -431,8 +373,6 @@ export default function CareerRecommendation({ income, onContinue }: Props) {
                         ))}
                       </div>
                     </div>
-
-                    {/* Resources */}
                     <div>
                       <h4 className="text-sm font-semibold text-gray-900 mb-2">Resources:</h4>
                       <div className="space-y-2">

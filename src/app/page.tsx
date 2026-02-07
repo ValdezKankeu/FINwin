@@ -14,6 +14,7 @@ import CareerRecommendation from '@/components/CareerRecommendation';
 import LifePathSelect from '@/components/LifePathSelect';
 import AmericanDreamGame from '@/components/AmericanDreamGame';
 import FlashyGame from '@/components/FlashyGame';
+import SafeInvestorGame from '@/components/SafeInvestorGame';
 import GameEnd from '@/components/GameEnd';
 import LifePathHeader from '@/components/Dashboard/LifePathHeader';
 import BudgetSnapshot from '@/components/Dashboard/BudgetSnapshot';
@@ -137,7 +138,18 @@ export default function Home() {
       return <FlashyGame income={income} onFinish={handleGameFinish} />;
     }
 
-    // American Dream, Safe Investor, and Global Life use the American Dream game engine for MVP
+    if (lifePath === 'low-risk-investor') {
+      return (
+        <SafeInvestorGame
+          income={income}
+          debt={finances.debt}
+          leftover={leftover}
+          onFinish={handleGameFinish}
+        />
+      );
+    }
+
+    // American Dream and Global Life
     return (
       <AmericanDreamGame
         income={income}
