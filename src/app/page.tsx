@@ -4,11 +4,15 @@ import { useState } from 'react';
 import { defaultBudget } from '@/data/budgetData';
 import type { Budget } from '@/data/budgetData';
 import type { LifePath } from '@/types';
+import type { UserFinances } from '@/components/ExpenseInput';
+import type { GameResult } from '@/components/AmericanDreamGame';
 import LandingPage from '@/components/LandingPage';
-import IncomeSetup from '@/components/IncomeSetup';
+import ExpenseInput from '@/components/ExpenseInput';
+import InsightsScreen from '@/components/InsightsScreen';
 import LifePathSelect from '@/components/LifePathSelect';
-import RealityCheck from '@/components/RealityCheck';
-import MoneyGame from '@/components/MoneyGame';
+import AmericanDreamGame from '@/components/AmericanDreamGame';
+import FlashyGame from '@/components/FlashyGame';
+import GameEnd from '@/components/GameEnd';
 import LifePathHeader from '@/components/Dashboard/LifePathHeader';
 import BudgetSnapshot from '@/components/Dashboard/BudgetSnapshot';
 import InsightEngine from '@/components/Dashboard/InsightEngine';
@@ -21,41 +25,53 @@ import BankConnect from '@/components/BankConnect';
 import SavingsGoal from '@/components/SavingsGoal';
 import ExchangeRateChart from '@/components/ExchangeRateChart';
 
-type Step = 'landing' | 'input' | 'paths' | 'reality' | 'game' | 'dashboard';
+type Step = 'landing' | 'input' | 'insights' | 'paths' | 'game' | 'end' | 'dashboard';
 
-function buildBudget(income: number, expenses: number): Budget {
-  const subTotal = defaultBudget.subscriptions.reduce((s, x) => s + x.cost, 0);
-  const recTotal = defaultBudget.recurring.reduce((s, x) => s + x.cost, 0);
-  const remaining = Math.max(0, expenses - subTotal - recTotal);
+function buildBudget(finances: UserFinances): Budget {
+  const subTotal = finances.subscriptions.reduce((s, x) => s + x.cost, 0);
   return {
-    monthlyIncome: income,
-    subscriptions: defaultBudget.subscriptions,
-    recurring: defaultBudget.recurring,
-    dailyExpenses: remaining,
+    monthlyIncome: finances.income,
+    subscriptions: finances.subscriptions.map(s => ({ name: s.name, cost: s.cost, category: 'subscription' })),
+    recurring: [
+      { name: 'Housing', cost: finances.rent },
+      { name: 'Groceries', cost: finances.groceries },
+      { name: 'Transport', cost: finances.transport },
+      { name: 'Debt', cost: finances.debt },
+      { name: 'Other', cost: finances.other },
+    ].filter(r => r.cost > 0),
+    dailyExpenses: 0,
   };
 }
 
 export default function Home() {
   const [step, setStep] = useState<Step>('landing');
-  const [income, setIncome] = useState(0);
-  const [expenses, setExpenses] = useState(0);
+  const [finances, setFinances] = useState<UserFinances | null>(null);
   const [lifePath, setLifePath] = useState<LifePath>('american-dream');
-  const [xp, setXp] = useState(0);
+  const [gameResult, setGameResult] = useState<GameResult | null>(null);
 
   // Landing
   if (step === 'landing') {
     return <LandingPage onStart={() => setStep('input')} />;
   }
 
-  // Income input
+  // Phase 1: Expense input
   if (step === 'input') {
     return (
-      <IncomeSetup
+      <ExpenseInput
         onNext={(data) => {
-          setIncome(data.income);
-          setExpenses(data.expenses);
-          setStep('paths');
+          setFinances(data);
+          setStep('insights');
         }}
+      />
+    );
+  }
+
+  // Phase 1: Insights
+  if (step === 'insights' && finances) {
+    return (
+      <InsightsScreen
+        finances={finances}
+        onContinue={() => setStep('paths')}
       />
     );
   }
@@ -66,64 +82,101 @@ export default function Home() {
       <LifePathSelect
         onSelect={(path) => {
           setLifePath(path);
-          setStep('reality');
+          setStep('game');
         }}
       />
     );
   }
 
-  // Reality check
-  if (step === 'reality') {
+  // Phase 2: Life path games
+  if (step === 'game' && finances) {
+    const income = finances.income;
+    const totalExpenses = finances.rent + finances.groceries + finances.transport + finances.debt + finances.other +
+      finances.subscriptions.reduce((a, s) => a + s.cost, 0);
+    const leftover = income - totalExpenses;
+
+    const handleGameFinish = (result: GameResult) => {
+      setGameResult(result);
+      setStep('end');
+    };
+
+    if (lifePath === 'flashy-lifestyle') {
+      return <FlashyGame income={income} onFinish={handleGameFinish} />;
+    }
+
+    // American Dream, Low-Risk Investor, and Global Life all use the American Dream game for MVP
     return (
-      <RealityCheck
+      <AmericanDreamGame
         income={income}
-        expenses={expenses}
-        lifePath={lifePath}
-        onContinue={() => setStep('game')}
+        debt={finances.debt}
+        leftover={leftover}
+        onFinish={handleGameFinish}
       />
     );
   }
 
-  // Mini-game
-  if (step === 'game') {
+  // Game end screen
+  if (step === 'end' && gameResult) {
     return (
-      <MoneyGame
-        leftover={income - expenses}
-        onFinish={(earnedXp) => {
-          setXp(earnedXp);
-          setStep('dashboard');
+      <GameEnd
+        result={gameResult}
+        onDashboard={() => setStep('dashboard')}
+        onReplay={() => {
+          setGameResult(null);
+          setStep('paths');
         }}
       />
     );
   }
 
   // Dashboard
-  const budget = buildBudget(income, expenses);
-  const leftover = income - expenses;
+  const fin = finances || { income: 0, subscriptions: [], rent: 0, groceries: 0, transport: 0, debt: 0, other: 0 };
+  const budget = buildBudget(fin);
+  const totalExp = fin.rent + fin.groceries + fin.transport + fin.debt + fin.other +
+    fin.subscriptions.reduce((a, s) => a + s.cost, 0);
+  const leftover = fin.income - totalExp;
   const showExchangeRates = lifePath === 'foreign-life' || lifePath === 'flashy-lifestyle';
 
-  // Build a profile object for the chat panel
   const profile = {
     age: 25,
     hasCareer: true,
     careerPath: null,
-    income,
-    expenses,
+    income: fin.income,
+    expenses: totalExp,
     lifePath,
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <LifePathHeader currentPath={lifePath} onPathChange={setLifePath} xp={xp} />
+      <LifePathHeader currentPath={lifePath} onPathChange={setLifePath} xp={0} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Game result summary at top of dashboard */}
+        {gameResult && (
+          <div className="mb-6 bg-white rounded-2xl border border-gray-200 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">Your Financial Personality</p>
+                <h3 className="text-2xl font-bold">{gameResult.personality}</h3>
+                <p className="text-sm text-gray-500 italic mt-1">"{gameResult.lesson}"</p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm text-gray-500">Final Net Worth</p>
+                <p className={`text-2xl font-bold ${gameResult.finalNetWorth >= 0 ? 'text-[#00D632]' : 'text-red-500'}`}>
+                  ${Math.abs(Math.round(gameResult.finalNetWorth)).toLocaleString()}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main content */}
           <div className="lg:col-span-2 space-y-6">
             <BudgetSnapshot budget={budget} />
 
             {showExchangeRates && (
-              <ExchangeRateChart lifePath={lifePath} monthlyIncome={income} />
+              <ExchangeRateChart lifePath={lifePath} monthlyIncome={fin.income} />
             )}
 
             <InvestmentCards />
