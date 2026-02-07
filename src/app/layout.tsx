@@ -4,7 +4,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'FINwin',
-  description: 'Turn Saving Into a Game You Can Win',
+  description: 'Plan',
 };
 
 export default function RootLayout({

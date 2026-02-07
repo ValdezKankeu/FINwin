@@ -1,92 +1,37 @@
-// Core types for FINwin app
+export type LifePath = 
+  | 'american-dream'
+  | 'flashy-lifestyle'
+  | 'low-risk-investor'
+  | 'foreign-life';
 
-export interface User {
+export interface Subscription {
   name: string;
-  age: number;
-  totalSaved: number;
-  totalXP: number;
-  currentLevel: number;
-  streakDays: number;
-  lastSaveDate?: string;
+  cost: number;
+  category: string;
 }
 
-export interface SavingsGoal {
-  id: string;
+export interface RecurringExpense {
   name: string;
-  targetAmount: number;
-  currentAmount: number;
-  category: 'phone' | 'shoes' | 'college' | 'emergency' | 'custom';
+  cost: number;
 }
 
-export interface Level {
-  id: number;
-  title: string;
-  requiredSavings: number;
-  requiredXP: number;
-  lessonId: string;
-  challengeDescription: string;
-  unlocked: boolean;
-  completed: boolean;
-  reward?: Reward;
+export interface Budget {
+  monthlyIncome: number;
+  subscriptions: Subscription[];
+  recurring: RecurringExpense[];
+  dailyExpenses: number;
 }
 
-export interface Lesson {
-  id: string;
-  title: string;
-  topic: string;
-  duration: number; // minutes
-  completed: boolean;
-  xpReward: number;
-  content: LessonContent;
-}
-
-export interface LessonContent {
-  introduction: string;
-  keyPoints: string[];
-  scenario?: {
-    question: string;
-    options: { text: string; correct: boolean; feedback: string }[];
-  };
-  quiz?: {
-    question: string;
-    options: { text: string; correct: boolean }[];
-  };
-}
-
-export interface Reward {
-  id: string;
-  type: 'badge' | 'title' | 'cosmetic';
+export interface LifePathConfig {
+  id: LifePath;
   name: string;
-  description: string;
-  imageUrl?: string;
-  unlocked: boolean;
-  dateUnlocked?: string;
+  tagline: string;
+  icon: string;
+  insights: string[];
+  actions: string[];
 }
 
-export interface Streak {
-  current: number;
-  longest: number;
-  lastActivityDate: string;
+export interface CompoundProjection {
+  years: number;
+  value: number;
 }
-
-export interface Deposit {
-  id: string;
-  amount: number;
-  date: string;
-  source: 'manual' | 'parent' | 'allowance';
-  approved: boolean;
-}
-
-export type Screen =
-  | 'welcome'
-  | 'name-input'
-  | 'age-input'
-  | 'goals-selection'
-  | 'parent-link'
-  | 'dashboard'
-  | 'level-detail'
-  | 'lesson'
-  | 'deposit'
-  | 'streaks'
-  | 'rewards'
-  | 'parent-dashboard';

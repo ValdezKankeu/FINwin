@@ -1,7 +1,7 @@
 'use client';
 
 import { Sparkles, TrendingUp, Trophy } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import Button from '@/components/ui/Button';
 
 interface WelcomeProps {
   onGetStarted: () => void;
@@ -19,7 +19,7 @@ export function Welcome({ onGetStarted }: WelcomeProps) {
           <div>
             <h1 className="text-6xl font-bold tracking-tight mb-4">FINwin</h1>
             <p className="text-2xl text-white/70 font-medium">
-              Turn Saving Into a Game You Can Win
+              Plan your life with FINwin
             </p>
           </div>
         </div>
@@ -68,7 +68,7 @@ export function Welcome({ onGetStarted }: WelcomeProps) {
       <div className="w-full max-w-md space-y-4">
         <Button
           onClick={onGetStarted}
-          size="lg"
+
           className="w-full bg-[#00D632] text-black hover:bg-[#00D632]/90 font-bold text-lg h-14 rounded-full"
         >
           Get Started
