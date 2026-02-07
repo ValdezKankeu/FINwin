@@ -24,6 +24,7 @@ export interface UserFinances {
   groceries: number;
   transport: number;
   debt: number;
+  utilities: number;
   other: number;
 }
 
@@ -40,6 +41,7 @@ export default function ExpenseInput({ onNext }: Props) {
   const [groceries, setGroceries] = useState('');
   const [transport, setTransport] = useState('');
   const [debt, setDebt] = useState('');
+  const [utilities, setUtilities] = useState('');
   const [other, setOther] = useState('');
 
   const toggleSub = (name: string) => {
@@ -49,7 +51,7 @@ export default function ExpenseInput({ onNext }: Props) {
   };
 
   const subTotal = SUBS.filter(s => activeSubs.has(s.name)).reduce((a, s) => a + s.cost, 0) + (parseFloat(otherSub) || 0);
-  const fixedTotal = (parseFloat(rent) || 0) + (parseFloat(groceries) || 0) + (parseFloat(transport) || 0) + (parseFloat(debt) || 0) + (parseFloat(other) || 0);
+  const fixedTotal = (parseFloat(rent) || 0) + (parseFloat(groceries) || 0) + (parseFloat(transport) || 0) + (parseFloat(debt) || 0) + (parseFloat(utilities) || 0) + (parseFloat(other) || 0);
   const totalExpenses = subTotal + fixedTotal;
   const inc = parseFloat(income) || 0;
   const leftover = inc - totalExpenses;
@@ -62,6 +64,7 @@ export default function ExpenseInput({ onNext }: Props) {
       groceries: parseFloat(groceries) || 0,
       transport: parseFloat(transport) || 0,
       debt: parseFloat(debt) || 0,
+      utilities: parseFloat(utilities) || 0,
       other: parseFloat(other) || 0,
     });
   };
@@ -164,6 +167,7 @@ export default function ExpenseInput({ onNext }: Props) {
           { label: '🛒 Groceries', value: groceries, set: setGroceries },
           { label: '🚗 Transportation', value: transport, set: setTransport },
           { label: '💳 Debt payments', value: debt, set: setDebt },
+          { label: '💡 Utilities', value: utilities, set: setUtilities },
           { label: '📦 Other', value: other, set: setOther },
         ].map(f => (
           <div key={f.label} className="flex items-center gap-3">

@@ -12,8 +12,8 @@ const COLORS = ['#00D632', '#10b981', '#f59e0b', '#3b82f6', '#8b5cf6', '#ef4444'
 
 export default function InsightsScreen({ finances, onContinue }: Props) {
   const subTotal = finances.subscriptions.reduce((a, s) => a + s.cost, 0);
-  const { income, rent, groceries, transport, debt, other } = finances;
-  const totalExpenses = subTotal + rent + groceries + transport + debt + other;
+  const { income, rent, groceries, transport, debt, utilities, other } = finances;
+  const totalExpenses = subTotal + rent + groceries + transport + debt + (utilities || 0) + other;
   const leftover = income - totalExpenses;
   const savingsRate = income > 0 ? Math.round((leftover / income) * 100) : 0;
 
@@ -23,6 +23,7 @@ export default function InsightsScreen({ finances, onContinue }: Props) {
     { name: 'Groceries', value: groceries },
     { name: 'Transport', value: transport },
     { name: 'Debt', value: debt },
+    { name: 'Utilities', value: utilities || 0 },
     { name: 'Other', value: other },
     ...(leftover > 0 ? [{ name: 'Unspent', value: leftover }] : []),
   ].filter(c => c.value > 0);
@@ -45,6 +46,13 @@ export default function InsightsScreen({ finances, onContinue }: Props) {
   if (rent > 0 && income > 0) {
     const rentPercent = Math.round((rent / income) * 100);
     insights.push(`Housing is ${rentPercent}% of income. ${rentPercent > 30 ? 'Above the 30% guideline — worth watching.' : 'Within the 30% guideline — solid.'}`);
+  }
+  if (debt > 0 && income > 0) {
+    const dti = Math.round((debt / income) * 100);
+    insights.push(`Debt-to-income ratio: ${dti}%.${dti > 35 ? ' That\'s high risk — lenders flag this above 35%.' : dti > 20 ? ' Moderate — room to improve.' : ' Healthy range.'}`);
+  }
+  if (leftover <= 0) {
+    insights.push(`No emergency fund detected. One unexpected expense could create a debt spiral.`);
   }
   if (leftover > 0) {
     insights.push(`You have $${leftover.toFixed(0)}/mo to work with. That's your superpower.`);
@@ -129,12 +137,12 @@ export default function InsightsScreen({ finances, onContinue }: Props) {
 
         {/* CTA to Phase 2 */}
         <div className="text-center space-y-3 pt-4">
-          <p className="text-gray-500">Now you know the facts. Ready to see what's possible?</p>
+          <p className="text-gray-500">You now understand your financial habits. Ready to learn how money really works?</p>
           <button
             onClick={onContinue}
             className="inline-flex items-center gap-2 px-8 py-4 bg-gray-900 text-white font-semibold text-lg rounded-full hover:shadow-lg hover:-translate-y-0.5 transition-all active:scale-95"
           >
-            Enter Life Path Mode
+            Start Financial Quiz
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path d="M7 4l6 6-6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>

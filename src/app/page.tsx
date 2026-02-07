@@ -9,6 +9,8 @@ import type { GameResult } from '@/components/AmericanDreamGame';
 import LandingPage from '@/components/LandingPage';
 import ExpenseInput from '@/components/ExpenseInput';
 import InsightsScreen from '@/components/InsightsScreen';
+import FinancialQuiz from '@/components/FinancialQuiz';
+import CareerRecommendation from '@/components/CareerRecommendation';
 import LifePathSelect from '@/components/LifePathSelect';
 import AmericanDreamGame from '@/components/AmericanDreamGame';
 import FlashyGame from '@/components/FlashyGame';
@@ -25,10 +27,9 @@ import BankConnect from '@/components/BankConnect';
 import SavingsGoal from '@/components/SavingsGoal';
 import ExchangeRateChart from '@/components/ExchangeRateChart';
 
-type Step = 'landing' | 'input' | 'insights' | 'paths' | 'game' | 'end' | 'dashboard';
+type Step = 'landing' | 'input' | 'insights' | 'quiz' | 'career' | 'paths' | 'game' | 'end' | 'dashboard';
 
 function buildBudget(finances: UserFinances): Budget {
-  const subTotal = finances.subscriptions.reduce((s, x) => s + x.cost, 0);
   return {
     monthlyIncome: finances.income,
     subscriptions: finances.subscriptions.map(s => ({ name: s.name, cost: s.cost, category: 'subscription' })),
@@ -37,15 +38,22 @@ function buildBudget(finances: UserFinances): Budget {
       { name: 'Groceries', cost: finances.groceries },
       { name: 'Transport', cost: finances.transport },
       { name: 'Debt', cost: finances.debt },
+      { name: 'Utilities', cost: finances.utilities || 0 },
       { name: 'Other', cost: finances.other },
     ].filter(r => r.cost > 0),
     dailyExpenses: 0,
   };
 }
 
+function getTotalExpenses(fin: UserFinances): number {
+  return fin.rent + fin.groceries + fin.transport + fin.debt + (fin.utilities || 0) + fin.other +
+    fin.subscriptions.reduce((a, s) => a + s.cost, 0);
+}
+
 export default function Home() {
   const [step, setStep] = useState<Step>('landing');
   const [finances, setFinances] = useState<UserFinances | null>(null);
+  const [quizScore, setQuizScore] = useState(0);
   const [lifePath, setLifePath] = useState<LifePath>('american-dream');
   const [gameResult, setGameResult] = useState<GameResult | null>(null);
 
@@ -71,12 +79,39 @@ export default function Home() {
     return (
       <InsightsScreen
         finances={finances}
+        onContinue={() => setStep('quiz')}
+      />
+    );
+  }
+
+  // Phase 2: Financial Quiz
+  if (step === 'quiz') {
+    return (
+      <FinancialQuiz
+        onFinish={(score) => {
+          setQuizScore(score);
+          // If income < $3,500, show career recommendations
+          if (finances && finances.income < 3500) {
+            setStep('career');
+          } else {
+            setStep('paths');
+          }
+        }}
+      />
+    );
+  }
+
+  // Phase 3: Career Recommendation (only if income < $3,500)
+  if (step === 'career' && finances) {
+    return (
+      <CareerRecommendation
+        income={finances.income}
         onContinue={() => setStep('paths')}
       />
     );
   }
 
-  // Life path selection
+  // Phase 4: Life path selection
   if (step === 'paths') {
     return (
       <LifePathSelect
@@ -88,12 +123,10 @@ export default function Home() {
     );
   }
 
-  // Phase 2: Life path games
+  // Life path games
   if (step === 'game' && finances) {
     const income = finances.income;
-    const totalExpenses = finances.rent + finances.groceries + finances.transport + finances.debt + finances.other +
-      finances.subscriptions.reduce((a, s) => a + s.cost, 0);
-    const leftover = income - totalExpenses;
+    const leftover = income - getTotalExpenses(finances);
 
     const handleGameFinish = (result: GameResult) => {
       setGameResult(result);
@@ -104,7 +137,7 @@ export default function Home() {
       return <FlashyGame income={income} onFinish={handleGameFinish} />;
     }
 
-    // American Dream, Low-Risk Investor, and Global Life all use the American Dream game for MVP
+    // American Dream, Safe Investor, and Global Life use the American Dream game engine for MVP
     return (
       <AmericanDreamGame
         income={income}
@@ -130,10 +163,9 @@ export default function Home() {
   }
 
   // Dashboard
-  const fin = finances || { income: 0, subscriptions: [], rent: 0, groceries: 0, transport: 0, debt: 0, other: 0 };
+  const fin = finances || { income: 0, subscriptions: [], rent: 0, groceries: 0, transport: 0, debt: 0, utilities: 0, other: 0 };
   const budget = buildBudget(fin);
-  const totalExp = fin.rent + fin.groceries + fin.transport + fin.debt + fin.other +
-    fin.subscriptions.reduce((a, s) => a + s.cost, 0);
+  const totalExp = getTotalExpenses(fin);
   const leftover = fin.income - totalExp;
   const showExchangeRates = lifePath === 'foreign-life' || lifePath === 'flashy-lifestyle';
 
@@ -151,7 +183,7 @@ export default function Home() {
       <LifePathHeader currentPath={lifePath} onPathChange={setLifePath} xp={0} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Game result summary at top of dashboard */}
+        {/* Game result summary */}
         {gameResult && (
           <div className="mb-6 bg-white rounded-2xl border border-gray-200 p-6">
             <div className="flex items-center justify-between">
@@ -160,11 +192,14 @@ export default function Home() {
                 <h3 className="text-2xl font-bold">{gameResult.personality}</h3>
                 <p className="text-sm text-gray-500 italic mt-1">"{gameResult.lesson}"</p>
               </div>
-              <div className="text-right">
-                <p className="text-sm text-gray-500">Final Net Worth</p>
-                <p className={`text-2xl font-bold ${gameResult.finalNetWorth >= 0 ? 'text-[#00D632]' : 'text-red-500'}`}>
-                  ${Math.abs(Math.round(gameResult.finalNetWorth)).toLocaleString()}
-                </p>
+              <div className="text-right space-y-1">
+                <div>
+                  <p className="text-sm text-gray-500">Final Net Worth</p>
+                  <p className={`text-2xl font-bold ${gameResult.finalNetWorth >= 0 ? 'text-[#00D632]' : 'text-red-500'}`}>
+                    ${Math.abs(Math.round(gameResult.finalNetWorth)).toLocaleString()}
+                  </p>
+                </div>
+                <p className="text-xs text-gray-400">Quiz Score: {quizScore}/20</p>
               </div>
             </div>
           </div>
@@ -200,7 +235,7 @@ export default function Home() {
       <footer className="border-t border-gray-200 mt-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <p className="text-center text-gray-400 text-sm">
-            FINwin — Your Intelligent Budget Planner | CMU Hackathon 2026
+            FINwin — Your Intelligent Budget Planner | Powered bY
           </p>
         </div>
       </footer>
